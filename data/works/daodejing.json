@@ -1,0 +1,236 @@
+{
+    "id":  "daodejing",
+    "title":  "道德经",
+    "author":  "传统归属：老子",
+    "sourceVersion":  "通行本（待校勘）",
+    "textBasis":  {
+                      "status":  "unverified",
+                      "baseText":  "通行本（当前样例未逐条校勘）",
+                      "witnesses":  [
+
+                                    ],
+                      "editorialLayers":  [
+                                              "简体字",
+                                              "现代标点",
+                                              "章节编号与标题"
+                                          ],
+                      "limitations":  [
+                                          "当前示例用于阅读器功能演示，尚未逐条与早期文献或校勘本核验。",
+                                          "不可据此将显示文本视为唯一或最终的古代原文。"
+                                      ]
+                  },
+    "chapters":  [
+                     {
+                         "id":  "daodejing-01",
+                         "number":  1,
+                         "title":  "道可道",
+                         "fullText":  "道可道，非常道；名可名，非常名。无名，天地之始；有名，万物之母。故常无欲，以观其妙；常有欲，以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。",
+                         "sentences":  [
+                                           {
+                                               "id":  "daodejing-01-01",
+                                               "order":  1,
+                                               "original":  "道可道，非常道。",
+                                               "literalTranslation":  "可以被言说的道，不是恒常的道。",
+                                               "llmInterpretation":  "中间的“道”作动词，指说出或表述；句子把可被固定说出的东西同“常”的道区分开。",
+                                               "ambiguities":  [
+                                                                   "“常”首先可指恒常，不宜未经说明改成“真正”。"
+                                                               ],
+                                               "confidence":  {
+                                                                  "literalMeaning":  "high",
+                                                                  "grammar":  "medium",
+                                                                  "interpretation":  "medium"
+                                                              },
+                                               "expandedInterpretation":  [
+                                                                              "先看句法：三个“道”并不完全同职。中间的“道”可以作动词，表示说出、陈述或形成一套可遵循的说法；前后两个“道”则是被谈论的对象。",
+                                                                              "进一步说，这句话未必是在宣布“道绝对不能说”。它更像是在提醒：一旦某种道被固定成一句话、一套名称或一种规范，它就已经成为有限的表达，不能与恒常而完整的对象本身重合。这是从句子结构作出的解释，不是原文明确展开的语言理论。"
+                                                                          ]
+                                           },
+                                           {
+                                               "id":  "daodejing-01-02",
+                                               "order":  2,
+                                               "original":  "名可名，非常名。",
+                                               "literalTranslation":  "可以被命名的名，不是恒常的名。",
+                                               "llmInterpretation":  "结构与前句平行；能够被指定出来的名称不能等同于恒常的“名”。",
+                                               "ambiguities":  [
+                                                                   "“名”可指名称、名目或概念性称谓。"
+                                                               ],
+                                               "confidence":  {
+                                                                  "literalMeaning":  "high",
+                                                                  "grammar":  "high",
+                                                                  "interpretation":  "medium"
+                                                              },
+                                               "expandedInterpretation":  [
+                                                                              "本句与上一句严格平行。“名”既可以是名称，也可以是命名或规定名称的动作；能够被确定下来的称呼，不等于恒常不变的“名”。",
+                                                                              "较深一层看，命名会把事物划分、固定并纳入某种理解框架。名称仍然有用，但名称只抓住对象的某一面，不能代替对象本身。“恒常之名”究竟是特殊概念，还是对一切固定名称的反省，原文没有完全说明。"
+                                                                          ]
+                                           },
+                                    …19410 tokens truncated…   this.status = status;
+  }
+}
+
+function createJsonStore(dataRoot) {
+  const libraryPath = path.join(dataRoot, 'library.json');
+  const writeChains = new Map();
+
+  async function readJson(filePath) {
+    try {
+      return JSON.parse(await fs.readFile(filePath, 'utf8'));
+    } catch (error) {
+      if (error.code === 'ENOENT') throw new StoreError('Resource not found', 404);
+      if (error instanceof SyntaxError) throw new StoreError('Stored JSON is invalid', 500);
+      throw error;
+    }
+  }
+
+  async function getLibrary() {
+    return readJson(libraryPath);
+  }
+
+  async function findWorkEntry(workId) {
+    if (!isSafeId(workId)) throw new StoreError('Work not found', 404);
+    const library = await getLibrary();
+    const work = library.works.find((entry) => entry.id === workId);
+    if (!work) throw new StoreError('Work not found', 404);
+    return work;
+  }
+
+  async function getContentWork(workId) {
+    await findWorkEntry(workId);
+    const work = await readJson(path.join(dataRoot, 'works', `${workId}.json`));
+    if (work.id !== workId) throw new StoreError('Work data does not match requested work', 500);
+    return work;
+  }
+
+  async function getNotes(workId) {
+    const notesPath = path.join(dataRoot, 'notes', `${workId}.json`);
+    try {
+      const notes = await readJson(notesPath);
+      if (notes.workId !== workId || !notes.sentences || typeof notes.sentences !== 'object' || Array.isArray(notes.sentences)) {
+        throw new StoreError('Notes data does not match requested work', 500);
+      }
+      return notes;
+    } catch (error) {
+      if (error instanceof StoreError && error.status === 404) {
+        return { workId, updatedAt: null, sentences: {} };
+      }
+      throw error;
+    }
+  }
+
+  function isCompleted(sentence) {
+    return sentence.status === 'completed' || sentence.status === 'reading';
+  }
+
+  function deriveChapterStatus(sentences) {
+    if (sentences.length > 0 && sentences.every(isCompleted)) return 'completed';
+    if (sentences.some((sentence) => sentence.status === 'uncertain')) return 'uncertain';
+    return 'unread';
+  }
+
+  function mergeNoteState(work, notes) {
+    let latestWorkUpdate = work.updatedAt || null;
+    for (const chapter of work.chapters) {
+      let latestChapterUpdate = chapter.updatedAt || null;
+      for (const sentence of chapter.sentences) {
+        const note = notes.sentences[sentence.id];
+        if (note && note.original !== sentence.original) {
+          throw new StoreError(`Note-to-source integrity mismatch for ${sentence.id}`, 500);
+        }
+        sentence.userNote = note?.userNote ?? '';
+        sentence.status = note?.status ?? 'unread';
+        sentence.updatedAt = note?.updatedAt ?? null;
+        if (sentence.updatedAt && (!latestChapterUpdate || sentence.updatedAt > latestChapterUpdate)) {
+          latestChapterUpdate = sentence.updatedAt;
+        }
+      }
+      chapter.status = deriveChapterStatus(chapter.sentences);
+      chapter.updatedAt = latestChapterUpdate;
+      if (latestChapterUpdate && (!latestWorkUpdate || latestChapterUpdate > latestWorkUpdate)) {
+        latestWorkUpdate = latestChapterUpdate;
+      }
+    }
+    work.updatedAt = latestWorkUpdate;
+    return work;
+  }
+
+  async function getWork(workId) {
+    const [work, notes] = await Promise.all([getContentWork(workId), getNotes(workId)]);
+    return mergeNoteState(work, notes);
+  }
+
+  async function getChapter(workId, chapterId) {
+    if (!isSafeId(chapterId)) throw new StoreError('Chapter not found', 404);
+    const work = await getWork(workId);
+    const chapter = work.chapters.find((entry) => entry.id === chapterId);
+    if (!chapter) throw new StoreError('Chapter not found', 404);
+    return { work, chapter };
+  }
+
+  async function getSentence(workId, chapterId, sentenceId) {
+    if (!isSafeId(sentenceId)) throw new StoreError('Sentence not found', 404);
+    const { work, chapter } = await getChapter(workId, chapterId);
+    const sentence = chapter.sentences.find((entry) => entry.id === sentenceId);
+    if (!sentence) throw new StoreError('Sentence not found', 404);
+    return { work, chapter, sentence };
+  }
+
+  async function writeJsonSafely(filePath, value) {
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    const temporaryPath = `${filePath}.tmp`;
+    await fs.writeFile(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+    await fs.rename(temporaryPath, filePath);
+  }
+
+  function enqueueWorkWrite(workId, task) {
+    const previous = writeChains.get(workId) || Promise.resolve();
+    const current = previous.catch(() => undefined).then(task);
+    writeChains.set(workId, current);
+    return current.finally(() => {
+      if (writeChains.get(workId) === current) writeChains.delete(workId);
+    });
+  }
+
+  async function updateSentence(workId, chapterId, sentenceId, update) {
+    if (!isSafeId(chapterId) || !isSafeId(sentenceId)) {
+      throw new StoreError('Chapter or sentence not found', 404);
+    }
+
+    return enqueueWorkWrite(workId, async () => {
+      const work = await getContentWork(workId);
+      const chapter = work.chapters.find((entry) => entry.id === chapterId);
+      if (!chapter) throw new StoreError('Chapter not found', 404);
+      const sentence = chapter.sentences.find((entry) => entry.id === sentenceId);
+      if (!sentence) throw new StoreError('Sentence not found', 404);
+
+      const notes = await getNotes(workId);
+      const existing = notes.sentences[sentenceId];
+      if (existing && existing.original !== sentence.original) {
+        throw new StoreError(`Note-to-source integrity mismatch for ${sentenceId}`, 500);
+      }
+
+      const savedAt = nowIso();
+      notes.sentences[sentenceId] = {
+        original: sentence.original,
+        userNote: update.userNote,
+        status: update.status,
+        updatedAt: savedAt
+      };
+      notes.updatedAt = savedAt;
+      await writeJsonSafely(path.join(dataRoot, 'notes', `${workId}.json`), notes);
+      return { sentenceId, savedAt };
+    });
+  }
+
+  return {
+    getLibrary,
+    getContentWork,
+    getNotes,
+    getWork,
+    getChapter,
+    getSentence,
+    updateSentence,
+    writeJsonSafely
+  };
+}
+
+module.exports = { createJsonStore, StoreError };

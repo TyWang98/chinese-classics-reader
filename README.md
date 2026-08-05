@@ -1,4 +1,4 @@
-﻿# Classical Text Reader / 古文逐句阅读与笔记
+# Classical Text Reader / 古文逐句阅读与笔记
 
 一个仅在本地运行的古文逐句阅读与笔记 Web 应用。它用原生 HTML、CSS 和 JavaScript 呈现作品、章节和逐句卡片；每一句的笔记和状态都会真实写入本地 JSON 文件。
 

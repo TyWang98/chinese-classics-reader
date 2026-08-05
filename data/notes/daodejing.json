@@ -1,0 +1,66 @@
+{
+    "workId":  "daodejing",
+    "updatedAt":  "2026-08-05T20:15:50.976Z",
+    "sentences":  {
+                      "daodejing-01-01":  {
+                                              "original":  "道可道，非常道。",
+                                              "userNote":  "这里面老子应该并不是意指恒常的道不能被解释，毕竟他自己现在也在说道。\n老子更像是在打预防针，道一旦被语言解释（甚至被观测），就只是一种近似，不再能代表道/物理规律本身。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T19:25:58.421Z"
+                                          },
+                      "daodejing-01-02":  {
+                                              "original":  "名可名，非常名。",
+                                              "userNote":  "一个事物被怎么称呼或分类，不等于它的自身。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T19:29:06.354Z"
+                                          },
+                      "daodejing-01-03":  {
+                                              "original":  "无名，天地之始。",
+                                              "userNote":  "宇宙的起点是0。",
+                                              "status":  "reading",
+                                              "updatedAt":  "2026-08-05T19:29:51.850Z"
+                                          },
+                      "daodejing-01-04":  {
+                                              "original":  "有名，万物之母。",
+                                              "userNote":  "0生1，1生万物。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T19:31:03.486Z"
+                                          },
+                      "daodejing-01-05":  {
+                                              "original":  "故常无欲，以观其妙。",
+                                              "userNote":  "妙是微妙的意思。\n没有欲望，心就不会乱，就更容易看到事物的隐象和细节。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T19:34:41.484Z"
+                                          },
+                      "daodejing-01-06":  {
+                                              "original":  "常有欲，以观其徼。",
+                                              "userNote":  "如果内心有欲望，我们只能关注到事物的表象。",
+                                              "status":  "uncertain",
+                                              "updatedAt":  "2026-08-05T20:03:24.316Z"
+                                          },
+                      "daodejing-01-07":  {
+                                              "original":  "此两者，同出而异名。",
+                                              "userNote":  "表象和隐象，并不互斥，只是不同名而已。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T20:07:24.918Z"
+                                          },
+                      "daodejing-01-08":  {
+                                              "original":  "同谓之玄。",
+                                              "userNote":  "二者共同成为深奥。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T20:10:54.399Z"
+                                          },
+                      "daodejing-01-09":  {
+                                              "original":  "玄之又玄。",
+                                              "userNote":  "深奥里面还有更深奥。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T20:11:34.701Z"
+                                          },
+                      "daodejing-01-10":  {
+                                              "original":  "众妙之门。",
+                                              "userNote":  "这是理解所有隐像的入口。",
+                                              "status":  "completed",
+                                              "updatedAt":  "2026-08-05T20:15:50.976Z"
+                                          }
+                  }
+}
