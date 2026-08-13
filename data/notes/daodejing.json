@@ -1,6 +1,6 @@
 {
     "workId":  "daodejing",
-    "updatedAt":  "2026-08-05T20:15:50.976Z",
+    "updatedAt":  "2026-08-13T21:15:35.973Z",
     "sentences":  {
                       "daodejing-01-01":  {
                                               "original":  "道可道，非常道。",
@@ -61,6 +61,66 @@
                                               "userNote":  "这是理解所有隐像的入口。",
                                               "status":  "completed",
                                               "updatedAt":  "2026-08-05T20:15:50.976Z"
-                                          }
+                                          },
+                      "daodejing-03-01": {
+                          "original": "不尚贤，使民不争。",
+                          "userNote": "尚贤的就是给人们设立标签，分等级的动作。一个良性的社会应该是不争的社会，人们可以自由地追求自己认为好的东西。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:20:55.871Z"
+                        },
+                      "daodejing-03-02": {
+                          "original": "不贵难得之货，使民不为盗。",
+                          "userNote": "主动创造稀缺会提高社会的动乱。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:22:52.163Z"
+                        },
+                      "daodejing-03-03": {
+                          "original": "不见可欲，使民心不乱。",
+                          "userNote": "这句话可作为前两句的解释。\n联想：常有欲，以观其徼。\n引导百姓去追求表象（徼），只会激发他们的欲，甚至民心之乱。\n良性社会的百姓应该是“无欲”的状态，这样人们都在追求世界运作下深层的有意义的东西。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:28:54.518Z"
+                        },
+                      "daodejing-03-04": {
+                          "original": "是以圣人之治，虚其心。",
+                          "userNote": "务虚，无欲。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:42:59.745Z"
+                        },
+                      "daodejing-03-05": {
+                          "original": "实其腹。",
+                          "userNote": "物质生活要得到最基本的保障。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:43:44.741Z"
+                        },
+                      "daodejing-03-06": {
+                          "original": "弱其志。",
+                          "userNote": "在这里我的理解是弱化人们的功利心，并不是让人们志向变小。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T20:44:55.860Z"
+                        },
+                      "daodejing-03-07": {
+                          "original": "强其骨。",
+                          "userNote": "身体健康。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T21:00:28.567Z"
+                        },
+                      "daodejing-03-08": {
+                          "original": "常使民无知无欲。",
+                          "userNote": "",
+                          "status": "uncertain",
+                          "updatedAt": "2026-08-13T21:03:07.281Z"
+                        },
+                      "daodejing-03-09": {
+                          "original": "使夫智者不敢为也。",
+                          "userNote": "",
+                          "status": "uncertain",
+                          "updatedAt": "2026-08-13T21:03:10.535Z"
+                        },
+                      "daodejing-03-10": {
+                          "original": "为无为，则无不治。",
+                          "userNote": "“为无为”不等于“不为”。\n因为治理本身就是一种为。\n这里指的是，在治理的过程中要把无为这种哲学加入进去，以使秩序自然形成。",
+                          "status": "completed",
+                          "updatedAt": "2026-08-13T21:15:35.973Z"
+                        }
                   }
 }
