@@ -1,7 +1,6 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { isSafeId } = require('../utils/validation');
-const { nowIso } = require('../utils/time');
 
 class StoreError extends Error {
   constructor(message, status = 500) {
@@ -150,7 +149,7 @@ function createJsonStore(dataRoot) {
         throw new StoreError(`Note-to-source integrity mismatch for ${sentenceId}`, 500);
       }
 
-      const savedAt = nowIso();
+      const savedAt = new Date().toISOString();
       notes.sentences[sentenceId] = {
         original: sentence.original,
         userNote: update.userNote,
@@ -170,8 +169,7 @@ function createJsonStore(dataRoot) {
     getWork,
     getChapter,
     getSentence,
-    updateSentence,
-    writeJsonSafely
+    updateSentence
   };
 }
 

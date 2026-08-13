@@ -40,15 +40,11 @@ Store personal state exclusively in `data/notes/<work-id>.json`, keyed by stable
 
 ## Text basis and source rules
 
-Follow `docs/EDITORIAL_POLICY.md`.
+Treat `docs/EDITORIAL_POLICY.md` as the single source of truth for textual evidence and editorial layers.
 
 - Every work must have a `textBasis` object with `status`, `baseText`, `witnesses`, `editorialLayers`, and `limitations`.
-- Do not present a modern reading edition, a received edition, or an LLM reconstruction as the uniquely authoritative original.
-- Prefer direct early evidence and documented critical editions when the user asks for early or minimally modernized text.
-- Do not judge reliability by a source's country, language, or political association. Compare named witnesses and state the evidence for material differences.
-- Never silently harmonize variants, modernize contested characters, or hide punctuation and chapter divisions as if they were part of the ancient witness.
-- Record consequential variant readings, segmentation differences, omissions, additions, and uncertain references in `ambiguities` or a dedicated `variants` field.
-- Treat simplified characters, punctuation, chapter titles, and chapter numbers as editorial layers unless the chosen witness itself establishes them.
+- Record consequential variants, segmentation differences, omissions, additions, and uncertain references in `ambiguities` or `variants`; never silently harmonize them.
+- Treat simplified characters, punctuation, chapter titles, and chapter numbers as editorial layers unless the chosen witness establishes them.
 - Do not change a noted sentence's `original` merely to adopt a new base text. That is an authorized sentence-identity migration, not an ordinary content edit.
 
 ## Content rules
@@ -97,6 +93,15 @@ Write `expandedInterpretation` as two to four short, self-contained paragraphs. 
 - On success show the returned time; on failure retain input and show an error.
 - Only PATCH `userNote` and `status`; never expose source fields for frontend edits.
 - Keep the interface quiet, readable, offline, and free of decorative animation.
+
+## Repository hygiene
+
+- Follow `.editorconfig`: UTF-8, LF, trailing newline, two-space indentation, and no trailing whitespace.
+- Keep HTML, CSS, JavaScript, and JSON readable and unminified in the repository.
+- Prefer Node.js and browser built-ins over a new dependency when they provide the required behavior clearly.
+- Do not create a helper module for a single trivial expression; do keep API, storage, validation, browser code, and data in their existing responsibility boundaries.
+- Remove a data field only after confirming that the backend, frontend, documentation, and tests have no remaining consumer.
+- Keep formatting-only changes out of later feature commits unless formatting is the explicit task.
 
 ## Scope
 

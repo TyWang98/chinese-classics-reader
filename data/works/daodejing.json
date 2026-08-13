@@ -1,236 +1,317 @@
 {
-    "id":  "daodejing",
-    "title":  "道德经",
-    "author":  "传统归属：老子",
-    "sourceVersion":  "通行本（待校勘）",
-    "textBasis":  {
-                      "status":  "unverified",
-                      "baseText":  "通行本（当前样例未逐条校勘）",
-                      "witnesses":  [
-
-                                    ],
-                      "editorialLayers":  [
-                                              "简体字",
-                                              "现代标点",
-                                              "章节编号与标题"
-                                          ],
-                      "limitations":  [
-                                          "当前示例用于阅读器功能演示，尚未逐条与早期文献或校勘本核验。",
-                                          "不可据此将显示文本视为唯一或最终的古代原文。"
-                                      ]
-                  },
-    "chapters":  [
-                     {
-                         "id":  "daodejing-01",
-                         "number":  1,
-                         "title":  "道可道",
-                         "fullText":  "道可道，非常道；名可名，非常名。无名，天地之始；有名，万物之母。故常无欲，以观其妙；常有欲，以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。",
-                         "sentences":  [
-                                           {
-                                               "id":  "daodejing-01-01",
-                                               "order":  1,
-                                               "original":  "道可道，非常道。",
-                                               "literalTranslation":  "可以被言说的道，不是恒常的道。",
-                                               "llmInterpretation":  "中间的“道”作动词，指说出或表述；句子把可被固定说出的东西同“常”的道区分开。",
-                                               "ambiguities":  [
-                                                                   "“常”首先可指恒常，不宜未经说明改成“真正”。"
-                                                               ],
-                                               "confidence":  {
-                                                                  "literalMeaning":  "high",
-                                                                  "grammar":  "medium",
-                                                                  "interpretation":  "medium"
-                                                              },
-                                               "expandedInterpretation":  [
-                                                                              "先看句法：三个“道”并不完全同职。中间的“道”可以作动词，表示说出、陈述或形成一套可遵循的说法；前后两个“道”则是被谈论的对象。",
-                                                                              "进一步说，这句话未必是在宣布“道绝对不能说”。它更像是在提醒：一旦某种道被固定成一句话、一套名称或一种规范，它就已经成为有限的表达，不能与恒常而完整的对象本身重合。这是从句子结构作出的解释，不是原文明确展开的语言理论。"
-                                                                          ]
-                                           },
-                                           {
-                                               "id":  "daodejing-01-02",
-                                               "order":  2,
-                                               "original":  "名可名，非常名。",
-                                               "literalTranslation":  "可以被命名的名，不是恒常的名。",
-                                               "llmInterpretation":  "结构与前句平行；能够被指定出来的名称不能等同于恒常的“名”。",
-                                               "ambiguities":  [
-                                                                   "“名”可指名称、名目或概念性称谓。"
-                                                               ],
-                                               "confidence":  {
-                                                                  "literalMeaning":  "high",
-                                                                  "grammar":  "high",
-                                                                  "interpretation":  "medium"
-                                                              },
-                                               "expandedInterpretation":  [
-                                                                              "本句与上一句严格平行。“名”既可以是名称，也可以是命名或规定名称的动作；能够被确定下来的称呼，不等于恒常不变的“名”。",
-                                                                              "较深一层看，命名会把事物划分、固定并纳入某种理解框架。名称仍然有用，但名称只抓住对象的某一面，不能代替对象本身。“恒常之名”究竟是特殊概念，还是对一切固定名称的反省，原文没有完全说明。"
-                                                                          ]
-                                           },
-                                    …19410 tokens truncated…   this.status = status;
-  }
-}
-
-function createJsonStore(dataRoot) {
-  const libraryPath = path.join(dataRoot, 'library.json');
-  const writeChains = new Map();
-
-  async function readJson(filePath) {
-    try {
-      return JSON.parse(await fs.readFile(filePath, 'utf8'));
-    } catch (error) {
-      if (error.code === 'ENOENT') throw new StoreError('Resource not found', 404);
-      if (error instanceof SyntaxError) throw new StoreError('Stored JSON is invalid', 500);
-      throw error;
-    }
-  }
-
-  async function getLibrary() {
-    return readJson(libraryPath);
-  }
-
-  async function findWorkEntry(workId) {
-    if (!isSafeId(workId)) throw new StoreError('Work not found', 404);
-    const library = await getLibrary();
-    const work = library.works.find((entry) => entry.id === workId);
-    if (!work) throw new StoreError('Work not found', 404);
-    return work;
-  }
-
-  async function getContentWork(workId) {
-    await findWorkEntry(workId);
-    const work = await readJson(path.join(dataRoot, 'works', `${workId}.json`));
-    if (work.id !== workId) throw new StoreError('Work data does not match requested work', 500);
-    return work;
-  }
-
-  async function getNotes(workId) {
-    const notesPath = path.join(dataRoot, 'notes', `${workId}.json`);
-    try {
-      const notes = await readJson(notesPath);
-      if (notes.workId !== workId || !notes.sentences || typeof notes.sentences !== 'object' || Array.isArray(notes.sentences)) {
-        throw new StoreError('Notes data does not match requested work', 500);
-      }
-      return notes;
-    } catch (error) {
-      if (error instanceof StoreError && error.status === 404) {
-        return { workId, updatedAt: null, sentences: {} };
-      }
-      throw error;
-    }
-  }
-
-  function isCompleted(sentence) {
-    return sentence.status === 'completed' || sentence.status === 'reading';
-  }
-
-  function deriveChapterStatus(sentences) {
-    if (sentences.length > 0 && sentences.every(isCompleted)) return 'completed';
-    if (sentences.some((sentence) => sentence.status === 'uncertain')) return 'uncertain';
-    return 'unread';
-  }
-
-  function mergeNoteState(work, notes) {
-    let latestWorkUpdate = work.updatedAt || null;
-    for (const chapter of work.chapters) {
-      let latestChapterUpdate = chapter.updatedAt || null;
-      for (const sentence of chapter.sentences) {
-        const note = notes.sentences[sentence.id];
-        if (note && note.original !== sentence.original) {
-          throw new StoreError(`Note-to-source integrity mismatch for ${sentence.id}`, 500);
+  "id": "daodejing",
+  "title": "道德经",
+  "author": "传统归属：老子",
+  "textBasis": {
+    "status": "unverified",
+    "baseText": "通行本（当前样例未逐条校勘）",
+    "witnesses": [],
+    "editorialLayers": [
+      "简体字",
+      "现代标点",
+      "章节编号与标题"
+    ],
+    "limitations": [
+      "当前示例用于阅读器功能演示，尚未逐条与早期文献或校勘本核验。",
+      "不可据此将显示文本视为唯一或最终的古代原文。"
+    ]
+  },
+  "chapters": [
+    {
+      "id": "daodejing-01",
+      "number": 1,
+      "title": "道可道",
+      "fullText": "道可道，非常道；名可名，非常名。无名，天地之始；有名，万物之母。故常无欲，以观其妙；常有欲，以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。",
+      "sentences": [
+        {
+          "id": "daodejing-01-01",
+          "order": 1,
+          "original": "道可道，非常道。",
+          "literalTranslation": "可以被言说的道，不是恒常的道。",
+          "llmInterpretation": "中间的“道”作动词，指说出或表述；句子把可被固定说出的东西同“常”的道区分开。",
+          "ambiguities": [
+            "“常”首先可指恒常，不宜未经说明改成“真正”。"
+          ],
+          "expandedInterpretation": [
+            "先看句法：三个“道”并不完全同职。中间的“道”可以作动词，表示说出、陈述或形成一套可遵循的说法；前后两个“道”则是被谈论的对象。",
+            "进一步说，这句话未必是在宣布“道绝对不能说”。它更像是在提醒：一旦某种道被固定成一句话、一套名称或一种规范，它就已经成为有限的表达，不能与恒常而完整的对象本身重合。这是从句子结构作出的解释，不是原文明确展开的语言理论。"
+          ]
+        },
+        {
+          "id": "daodejing-01-02",
+          "order": 2,
+          "original": "名可名，非常名。",
+          "literalTranslation": "可以被命名的名，不是恒常的名。",
+          "llmInterpretation": "结构与前句平行；能够被指定出来的名称不能等同于恒常的“名”。",
+          "ambiguities": [
+            "“名”可指名称、名目或概念性称谓。"
+          ],
+          "expandedInterpretation": [
+            "本句与上一句严格平行。“名”既可以是名称，也可以是命名或规定名称的动作；能够被确定下来的称呼，不等于恒常不变的“名”。",
+            "较深一层看，命名会把事物划分、固定并纳入某种理解框架。名称仍然有用，但名称只抓住对象的某一面，不能代替对象本身。“恒常之名”究竟是特殊概念，还是对一切固定名称的反省，原文没有完全说明。"
+          ]
+        },
+        {
+          "id": "daodejing-01-03",
+          "order": 3,
+          "original": "无名，天地之始。",
+          "literalTranslation": "无名，是天地的开始。",
+          "llmInterpretation": "“无名”在句首作话题，后面把它同天地的开端联系起来。",
+          "ambiguities": [
+            "也有“无，名天地之始”的断句可能。"
+          ],
+          "expandedInterpretation": [
+            "按当前断句，“无名”是话题，“天地之始”说明它与天地开端的关系。这里可以把“无名”理解为尚未通过名称加以区分、规定的状态。",
+            "如果作进一步推演，天地出现之前，还没有可以分别指称的万物，因此“无名”适合描述未分化的起点。但这只是宇宙生成式的读法；若采用另一种断句，本句的结构和重点都会改变。"
+          ]
+        },
+        {
+          "id": "daodejing-01-04",
+          "order": 4,
+          "original": "有名，万物之母。",
+          "literalTranslation": "有名，是万物的母。",
+          "llmInterpretation": "与前句相对；“母”可表示生成或出发的关系，不必理解成具体人物。",
+          "ambiguities": [
+            "“有名”可指已有名称，也可能指已显现的状态。"
+          ],
+          "expandedInterpretation": [
+            "这句与“无名，天地之始”相对。“有名”表示事物已经进入可以区分、指认的状态；“母”用生成者的比喻说明它与万物展开之间的关系。",
+            "一种较完整的理解是：未命名对应未分化的开端，命名则使万物呈现为彼此不同、可以认识的事物。不过，“命名创造万物”并不是本句直接说出的命题，也可以只把“有名”理解为已经显现的存在状态。"
+          ]
+        },
+        {
+          "id": "daodejing-01-05",
+          "order": 5,
+          "original": "故常无欲，以观其妙。",
+          "literalTranslation": "所以常常无欲，用来观看它的妙。",
+          "llmInterpretation": "“以”引出目的；“其”可回指前面所谈之物，句子把无欲同观察其妙并置。",
+          "ambiguities": [
+            "传本和断句可能影响“常无欲”的理解；“妙”的具体所指不定。"
+          ],
+          "expandedInterpretation": [
+            "按当前断句，“常无欲”是保持无欲的状态，“以”表示凭借这种状态去观察，“妙”指不易直接显露的细微或幽微之处。",
+            "可以进一步理解为：欲求会预先规定人想看见什么、取得什么；暂时不被欲求牵引，可能更容易注意到事物尚未定形、难以概括的一面。但原文没有直接说明具体的心理机制，而且不同断句会使“常”“无”和“欲”的关系改变。"
+          ]
+        },
+        {
+          "id": "daodejing-01-06",
+          "order": 6,
+          "original": "常有欲，以观其徼。",
+          "literalTranslation": "常怀有欲求，借以观察它的边际。",
+          "llmInterpretation": "句法与前句平行；“徼”可指边际或可见的外在处。",
+          "ambiguities": [
+            "“徼”有边际、归结等义项，断句亦可能不同。"
+          ],
+          "expandedInterpretation": [
+            "这句在形式上与上一句平行。“有欲”是带着欲求去看，“徼”可以指边际、端点、归结或已经显出的界限。",
+            "较强的解释是：当人有所欲求时，注意力会集中在对象可取得、可利用、可辨认的表现与结果上，因此看见的是它的边界或外显面。不过这不必被理解成“有欲只能看见虚假的表象”；两种观看也可能只是分别呈现同一对象的不同方面。"
+          ]
+        },
+        {
+          "id": "daodejing-01-07",
+          "order": 7,
+          "original": "此两者，同出而异名。",
+          "literalTranslation": "这两者，同样出来而名称不同。",
+          "llmInterpretation": "“此两者”通常回指紧邻的两种观察或所见；句子说它们有共同出处而称呼不同。",
+          "ambiguities": [
+            "“两者”可能指无欲/有欲，也可能指妙/徼。"
+          ],
+          "expandedInterpretation": [
+            "“此两者”承接上文，但究竟指“无与有”“无欲与有欲”，还是“妙与徼”，取决于断句和解释。“同出”强调共同来源，“异名”强调区分发生在名称上。",
+            "如果把它理解成两种观察结果，那么幽微之处与显明边界并非两个互不相干的世界，而是同一过程在不同观看条件下呈现出的两面。如果把它理解成“无”和“有”，重点则会转向未分化与已分化具有共同根源。"
+          ]
+        },
+        {
+          "id": "daodejing-01-08",
+          "order": 8,
+          "original": "同谓之玄。",
+          "literalTranslation": "同样称它们为玄。",
+          "llmInterpretation": "“谓之”是称它为的句式；“玄”是前述两者的共同称谓。",
+          "ambiguities": [
+            "“同”可修饰“谓”，也可能承接上句。"
+          ],
+          "expandedInterpretation": [
+            "“谓之”就是称它为。“同”表示前述两者可以共同得到“玄”这一称呼；这里的“玄”主要标记其深远、幽暗或难以直接分辨的性质。",
+            "进一步说，之所以称为“玄”，可能不是因为它们神秘超自然，而是因为两者虽名称不同，却又同源，普通的分类语言难以把这种关系彻底说清。这个解释依赖“此两者”的具体指向。"
+          ]
+        },
+        {
+          "id": "daodejing-01-09",
+          "order": 9,
+          "original": "玄之又玄。",
+          "literalTranslation": "幽深而又幽深。",
+          "llmInterpretation": "重复“玄”形成递进或加重；程度不能由字面精确量化。",
+          "ambiguities": [
+            "可理解为深远而又深远，也可保留重复的开放性。"
+          ],
+          "expandedInterpretation": [
+            "本句通过重复“玄”加强程度。“之”把前后两个“玄”连接起来，表示在已经称为玄的层次上仍然更进一步，而不是简单提供另一个定义。",
+            "它可以暗示：对共同根源的追问不会在一个概念上立刻终止，每次说明仍可能留下更深的未明之处。不过“层层无限深入”是由修辞推演出的理解，原文只明确表达了加深。"
+          ]
+        },
+        {
+          "id": "daodejing-01-10",
+          "order": 10,
+          "original": "众妙之门。",
+          "literalTranslation": "许多微妙事物的门。",
+          "llmInterpretation": "名词性短句；“门”可按入口或关键处理解。",
+          "ambiguities": [
+            "“门”是入口、途径还是比喻性关键处，不能由本句定论。"
+          ],
+          "expandedInterpretation": [
+            "这是一个名词性判断。“众妙”指许多幽微、精妙或难以直接显露的方面，“门”比喻进入、通达或开始理解它们的地方。",
+            "承接上句时，“玄之又玄”可以被看作通向各种幽微之理的入口。它没有列出一套具体方法，更像是用“门”说明：承认语言和区分的限度，可能成为继续观察这些细微关系的起点。"
+          ]
         }
-        sentence.userNote = note?.userNote ?? '';
-        sentence.status = note?.status ?? 'unread';
-        sentence.updatedAt = note?.updatedAt ?? null;
-        if (sentence.updatedAt && (!latestChapterUpdate || sentence.updatedAt > latestChapterUpdate)) {
-          latestChapterUpdate = sentence.updatedAt;
+      ]
+    },
+    {
+      "id": "daodejing-03",
+      "number": 3,
+      "title": "不尚贤",
+      "fullText": "不尚贤，使民不争；不贵难得之货，使民不为盗；不见可欲，使民心不乱。是以圣人之治，虚其心，实其腹，弱其志，强其骨。常使民无知无欲，使夫智者不敢为也。为无为，则无不治。",
+      "sentences": [
+        {
+          "id": "daodejing-03-01",
+          "order": 1,
+          "original": "不尚贤，使民不争。",
+          "literalTranslation": "不崇尚贤者，使百姓不争。",
+          "llmInterpretation": "“尚”是崇尚、推重；后半句是前句所说做法的结果或目的。",
+          "ambiguities": [
+            "“贤”可指德才出众者，也可指被社会标举为贤的人。"
+          ],
+          "expandedInterpretation": [
+            "“尚”不只是承认某人有能力，还包含公开推崇、抬高并把他树立为竞逐目标。“使民不争”说明作者关心这种评价方式会产生怎样的社会反应。",
+            "当某种“贤”被公开标举并与地位、奖赏相连，人们可能围绕这个标准竞争。本句可以是在反对制造名位竞争，而不一定是否定一切真实能力；但它也容许一种更强的政治读法，即统治者主动压低社会中的进取与竞争。"
+          ]
+        },
+        {
+          "id": "daodejing-03-02",
+          "order": 2,
+          "original": "不贵难得之货，使民不为盗。",
+          "literalTranslation": "不把难得的货物看得贵重，使百姓不做盗贼。",
+          "llmInterpretation": "“贵”作动词，指看重；句子把重视稀有货物同盗窃联系起来。",
+          "ambiguities": [
+            "“不为盗”可指不做盗贼，也可泛指不发生盗窃。"
+          ],
+          "expandedInterpretation": [
+            "“贵”在这里作动词，指把某物抬高为贵重之物。“难得之货”一旦被赋予显著价值，就会成为争夺和盗取的对象。",
+            "这句话把治理重点放在欲望形成的环境，而不只放在盗窃后的惩罚上：若社会不断制造稀缺品的荣耀，盗窃的诱因也随之增强。这是一种关于激励的推演；原文并未声称所有盗窃都只有这一个原因。"
+          ]
+        },
+        {
+          "id": "daodejing-03-03",
+          "order": 3,
+          "original": "不见可欲，使民心不乱。",
+          "literalTranslation": "不使可欲之物显现，使百姓的心不乱。",
+          "llmInterpretation": "“见”可作使显现；“可欲”是足以引起欲求的对象。",
+          "ambiguities": [
+            "“见”也可按看见理解，主语和使动关系会不同。"
+          ],
+          "expandedInterpretation": [
+            "“见”可以读作“显现”，也可以读作使动的“使人看见”；“可欲”指足以引起欲求的对象。后半句把这种展示同人心扰乱联系起来。",
+            "较完整的理解是：治理者不要不断把某些东西包装成人人应当追逐的目标，以免人的注意和欲望被反复挑动。这不必等于遮住一切可见之物，但原文的政治措施可以比现代人愿意接受的范围更强，不能自动把它柔化成单纯的消费建议。"
+          ]
+        },
+        {
+          "id": "daodejing-03-04",
+          "order": 4,
+          "original": "是以圣人之治，虚其心。",
+          "literalTranslation": "因此圣人的治理，使他们的心空。",
+          "llmInterpretation": "“是以”即因此；“虚”可作使动，表示使心中少有充塞之物。",
+          "ambiguities": [
+            "“虚其心”不等于没有思想；“其”通常承接民。"
+          ],
+          "expandedInterpretation": [
+            "“圣人之治”引出一组并列的使动表达。“虚其心”字面上是使百姓的心变空；“心”在古文中可兼指情绪、欲念、判断和谋划。",
+            "温和的读法是减少被名利和机巧填满的心思；较强的政治读法则是让百姓少有自主谋划和竞争意图。原文没有明确划定两者的界线，因此不能只保留较舒适的解释。"
+          ]
+        },
+        {
+          "id": "daodejing-03-05",
+          "order": 5,
+          "original": "实其腹。",
+          "literalTranslation": "使他们的腹实。",
+          "llmInterpretation": "“实”也是使动；字面指使腹中充实，可关联基本生活满足。",
+          "ambiguities": [
+            "“腹”可直指腹部，也可能有更宽的供养含义。"
+          ],
+          "expandedInterpretation": [
+            "“实其腹”与“虚其心”相对，是使腹中充实。最直接的意思涉及饮食和基本生活得到满足。",
+            "放在治理语境中，它形成一种清楚的次序：减少复杂欲求和争竞，同时保证身体所需。这可以理解为重基本生计、轻名位欲望；也可能包含一种以物质安顿换取政治安定的治理设想。后一层是语境推演，不是本句单独明说。"
+          ]
+        },
+        {
+          "id": "daodejing-03-06",
+          "order": 6,
+          "original": "弱其志。",
+          "literalTranslation": "使他们的志弱。",
+          "llmInterpretation": "“志”可指意志、志向或欲求趋向；这是使动结构。",
+          "ambiguities": [
+            "“弱”是削弱、柔弱化还是使之不强进，存在解释空间。"
+          ],
+          "expandedInterpretation": [
+            "“弱”是使动用法。“志”可以是意向、志向、欲求所趋，也可能包含积极进取和自主谋划。",
+            "因此本句不宜轻易改写成“让人心态柔和”。它可能是在说削弱争名逐利的强烈意向，也可能更直接地要求降低百姓的政治或社会能动性。哪一种范围更合适，需要和本章整体的治理对象一起判断。"
+          ]
+        },
+        {
+          "id": "daodejing-03-07",
+          "order": 7,
+          "original": "强其骨。",
+          "literalTranslation": "使他们的骨强。",
+          "llmInterpretation": "“骨”可按身体骨骼理解，也可能泛指体力或承受能力。",
+          "ambiguities": [
+            "是否完全是比喻，需要结合整段身体语汇判断。"
+          ],
+          "expandedInterpretation": [
+            "“强其骨”与“弱其志”形成身体和意向的对举。“骨”首先可以按身体根基理解，使骨强即使人身体健实。",
+            "与“实其腹”合看，本章并非单纯要求百姓变弱，而是让其身体和基本生活得到保障，同时削弱某类欲望与志向。这种组合既可被读成重朴素生活，也可被读成塑造易于治理的民众。"
+          ]
+        },
+        {
+          "id": "daodejing-03-08",
+          "order": 8,
+          "original": "常使民无知无欲。",
+          "literalTranslation": "常常使百姓没有知、没有欲。",
+          "llmInterpretation": "“使民”带两个并列结果；“知”可能指某种机巧或分辨，不能由此断定否定一切认识。",
+          "ambiguities": [
+            "“无知”可指无某类知识，也可能更宽泛；“常”的范围可讨论。"
+          ],
+          "expandedInterpretation": [
+            "“无知无欲”是两个并列结果。这里的“知”可能偏向机巧、分别和追逐利益的知识，也可能保留较宽的“知道”之义；“欲”则是被对象牵动的欲求。",
+            "若取较窄解释，本句要求人少机巧、少欲求，以免争夺；若取字面较宽的解释，它会呈现明显的反知识和控制色彩。原文没有给“知”加上限定，因此解释时应保留这种不舒服但真实存在的可能性。"
+          ]
+        },
+        {
+          "id": "daodejing-03-09",
+          "order": 9,
+          "original": "使夫智者不敢为也。",
+          "literalTranslation": "使那些智者不敢做。",
+          "llmInterpretation": "“夫”可作指示，意为那些；“为”没有明示宾语，可能回指前述有意作为。",
+          "ambiguities": [
+            "“智者”和“为”的具体范围均需依上下文推测。"
+          ],
+          "expandedInterpretation": [
+            "“夫”在这里可以用来指示“那些”，“智者”是有智巧或善于谋划的人。“为”没有宾语，可能指采取有意安排、争夺或干预性的行动。",
+            "承接前句时，作者似乎希望连擅长谋划的人也不敢凭智巧生事。若把“为”限定为妄为或巧诈，本句较接近防止操弄；若不加限定，它也可能意味着压制能动行为。这个限制是否存在，原文没有说透。"
+          ]
+        },
+        {
+          "id": "daodejing-03-10",
+          "order": 10,
+          "original": "为无为，则无不治。",
+          "literalTranslation": "做无为，那么没有不治的。",
+          "llmInterpretation": "“为无为”把为与无为并置；后半句用双重否定表达没有不被治理的。",
+          "ambiguities": [
+            "“无不治”可指没有不能治理的，也可指没有不安定的。"
+          ],
+          "expandedInterpretation": [
+            "“为无为”把“为”和“无为”并置：所采取的治理方式，是不作强行、造作或过度干预之事。“无不治”用双重否定表示没有不得到治理，或没有不安定。",
+            "它不是字面上的什么都不做，因为句首仍用了“为”。较常见的理解是：治理者通过减少人为刺激、名位竞争和强制操控，使秩序自行形成。但“无为”的边界并不清楚，本章前面那些塑造民心的措施也显示，它未必等同于现代意义的完全放任。"
+          ]
         }
-      }
-      chapter.status = deriveChapterStatus(chapter.sentences);
-      chapter.updatedAt = latestChapterUpdate;
-      if (latestChapterUpdate && (!latestWorkUpdate || latestChapterUpdate > latestWorkUpdate)) {
-        latestWorkUpdate = latestChapterUpdate;
-      }
+      ]
     }
-    work.updatedAt = latestWorkUpdate;
-    return work;
-  }
-
-  async function getWork(workId) {
-    const [work, notes] = await Promise.all([getContentWork(workId), getNotes(workId)]);
-    return mergeNoteState(work, notes);
-  }
-
-  async function getChapter(workId, chapterId) {
-    if (!isSafeId(chapterId)) throw new StoreError('Chapter not found', 404);
-    const work = await getWork(workId);
-    const chapter = work.chapters.find((entry) => entry.id === chapterId);
-    if (!chapter) throw new StoreError('Chapter not found', 404);
-    return { work, chapter };
-  }
-
-  async function getSentence(workId, chapterId, sentenceId) {
-    if (!isSafeId(sentenceId)) throw new StoreError('Sentence not found', 404);
-    const { work, chapter } = await getChapter(workId, chapterId);
-    const sentence = chapter.sentences.find((entry) => entry.id === sentenceId);
-    if (!sentence) throw new StoreError('Sentence not found', 404);
-    return { work, chapter, sentence };
-  }
-
-  async function writeJsonSafely(filePath, value) {
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-    const temporaryPath = `${filePath}.tmp`;
-    await fs.writeFile(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-    await fs.rename(temporaryPath, filePath);
-  }
-
-  function enqueueWorkWrite(workId, task) {
-    const previous = writeChains.get(workId) || Promise.resolve();
-    const current = previous.catch(() => undefined).then(task);
-    writeChains.set(workId, current);
-    return current.finally(() => {
-      if (writeChains.get(workId) === current) writeChains.delete(workId);
-    });
-  }
-
-  async function updateSentence(workId, chapterId, sentenceId, update) {
-    if (!isSafeId(chapterId) || !isSafeId(sentenceId)) {
-      throw new StoreError('Chapter or sentence not found', 404);
-    }
-
-    return enqueueWorkWrite(workId, async () => {
-      const work = await getContentWork(workId);
-      const chapter = work.chapters.find((entry) => entry.id === chapterId);
-      if (!chapter) throw new StoreError('Chapter not found', 404);
-      const sentence = chapter.sentences.find((entry) => entry.id === sentenceId);
-      if (!sentence) throw new StoreError('Sentence not found', 404);
-
-      const notes = await getNotes(workId);
-      const existing = notes.sentences[sentenceId];
-      if (existing && existing.original !== sentence.original) {
-        throw new StoreError(`Note-to-source integrity mismatch for ${sentenceId}`, 500);
-      }
-
-      const savedAt = nowIso();
-      notes.sentences[sentenceId] = {
-        original: sentence.original,
-        userNote: update.userNote,
-        status: update.status,
-        updatedAt: savedAt
-      };
-      notes.updatedAt = savedAt;
-      await writeJsonSafely(path.join(dataRoot, 'notes', `${workId}.json`), notes);
-      return { sentenceId, savedAt };
-    });
-  }
-
-  return {
-    getLibrary,
-    getContentWork,
-    getNotes,
-    getWork,
-    getChapter,
-    getSentence,
-    updateSentence,
-    writeJsonSafely
-  };
+  ]
 }
-
-module.exports = { createJsonStore, StoreError };

@@ -27,13 +27,13 @@ npm install
 npm start
 ```
 
-打开 [http://localhost:3000](http://localhost:3000)。开发时可使用：
+打开 [http://localhost:3000](http://localhost:3000)。开发时可使用 Node.js 自带的监听重启模式（不需要 nodemon）：
 
 ```bash
 npm run dev
 ```
 
-在 Windows 上也可双击 [启动古文阅读.cmd](启动古文阅读.cmd)。它会先检查 `npm` 是否可用；若未安装 Node.js，会给出明确提示。
+在 Windows 上也可双击 [启动古文阅读.cmd](启动古文阅读.cmd)。它会复用已经运行的阅读器，并依次查找系统 Node.js 或 Codex Desktop 自带的本地 Node 运行时。
 
 页面必须由本地服务器打开，不能直接双击 HTML 文件；后者无法写入 JSON。
 
@@ -51,8 +51,7 @@ npm run dev
 data/
 ├── library.json              # 作品索引
 ├── works/<work-id>.json      # 原文、翻译、解释、文本依据
-├── notes/<work-id>.json      # 用户笔记、状态、保存时间、原句快照
-└── backups/                  # 手工或迁移前备份（如有）
+└── notes/<work-id>.json      # 用户笔记、状态、保存时间、原句快照
 ```
 
 笔记按稳定句子 ID 保存，并记录当时的精确原句。服务器发现笔记原句与正文原句不一致时会拒绝读取/保存，避免把笔记悄悄接到错误句子上。
@@ -89,6 +88,7 @@ npm test
 
 ```text
 classical-text-reader/
+├── .editorconfig             # UTF-8、LF、两空格等基础格式约定
 ├── AGENTS.md
 ├── README.md
 ├── server.js
@@ -101,6 +101,9 @@ classical-text-reader/
 └── 启动古文阅读.cmd            # Windows 便捷入口
 ```
 
+## 代码与数据格式
+
+仓库使用 `.editorconfig` 约定 UTF-8、LF、文件末尾换行和两空格缩进。HTML、CSS、JavaScript 与 JSON 都保留为可直接审阅的非压缩文本；运行时写回 JSON 时也使用同一格式。项目不为格式化额外引入依赖。
 ## 当前限制
 
 仅支持单个本地用户与 JSON 文件；没有账号、同步、数据库、LLM API、在线部署、Markdown 编辑器或自动保存。当前《道德经》示例仍是“待校勘”文本，不能当作唯一可靠底本。

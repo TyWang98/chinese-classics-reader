@@ -14,7 +14,7 @@ Every work must include a `textBasis` object in its work JSON. It records:
 - `editorialLayers`: transformations added for this reader, such as simplified characters, punctuation, chapter numbering, titles, or normalized character forms.
 - `limitations`: what has not been checked and what the display must not be taken to prove.
 
-`sourceVersion: "通行本"` by itself is never enough to mark a text as reviewed.
+`baseText: "通行本"` by itself is never enough to mark a text as reviewed.
 
 ## Evidence order
 
