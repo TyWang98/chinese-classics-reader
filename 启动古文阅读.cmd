@@ -32,6 +32,6 @@ if not exist "node_modules\express\package.json" (
   exit /b 1
 )
 
-start "Classical Text Reader Server" cmd.exe /k "cd /d ""%PROJECT_DIR%"" ^&^& ""%NODE_EXE%"" server.js"
+start "Classical Text Reader Server" "%NODE_EXE%" server.js
 timeout /t 2 /nobreak >nul
 start "" "http://localhost:3000"

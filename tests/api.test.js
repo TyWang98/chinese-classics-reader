@@ -30,7 +30,7 @@ test('API returns the library, text basis, chapters, and sentence content', asyn
   assert.equal(Object.hasOwn(library.works[0], 'description'), false);
 
   const work = await fetch(`${base}/api/works/daodejing`).then((response) => response.json());
-  assert.equal(work.chapters.length, 2);
+  assert.equal(work.chapters.length, 3);
   assert.equal(work.textBasis.status, 'unverified');
   assert.equal(Object.hasOwn(work, 'sourceVersion'), false);
 

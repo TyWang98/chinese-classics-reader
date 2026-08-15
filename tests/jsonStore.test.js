@@ -27,8 +27,8 @@ test('reads public content, starts with no personal state, and derives chapter s
   assert.equal(Object.hasOwn(content.chapters[0].sentences[0], 'userNote'), false);
 
   const initial = await store.getWork('daodejing');
-  assert.equal(initial.chapters[0].status, 'unread');
-  assert.equal(initial.chapters[1].status, 'unread');
+  assert.equal(initial.chapters.length, 3);
+  assert.ok(initial.chapters.every((chapter) => chapter.status === 'unread'));
 
   const { sentence } = await store.getSentence(
     'daodejing',

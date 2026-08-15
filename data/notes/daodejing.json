@@ -1,6 +1,6 @@
 {
   "workId": "daodejing",
-  "updatedAt": "2026-08-13T21:15:35.973Z",
+  "updatedAt": "2026-08-15T21:28:01.044Z",
   "sentences": {
     "daodejing-01-01": {
       "original": "道可道，非常道。",
@@ -121,6 +121,60 @@
       "userNote": "“为无为”不等于“不为”。\n因为治理本身就是一种为。\n这里指的是，在治理的过程中要把无为这种哲学加入进去，以使秩序自然形成。",
       "status": "completed",
       "updatedAt": "2026-08-13T21:15:35.973Z"
+    },
+    "daodejing-02-01": {
+      "original": "天下皆知美之为美，斯恶已。",
+      "userNote": "人们的思维方式很二进制或三进制。人类的天性就会去判断好和坏，和不好不坏。\n所以如果有了美作为好的一面，那二进制的另一端就变成了坏的丑。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:07:15.307Z"
+    },
+    "daodejing-02-02": {
+      "original": "皆知善之为善，斯不善已。",
+      "userNote": "善在这里应该是泛化的“好”，这与我对上一句的注释呼应。\n上一句是例子，这一句是泛化总结。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:19:06.498Z"
+    },
+    "daodejing-02-03": {
+      "original": "故有无相生。",
+      "userNote": "同出而异名。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:19:32.311Z"
+    },
+    "daodejing-02-04": {
+      "original": "难易相成。",
+      "userNote": "同上。\n",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:20:15.866Z"
+    },
+    "daodejing-02-05": {
+      "original": "长短相形。",
+      "userNote": "同上。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:20:31.757Z"
+    },
+    "daodejing-02-06": {
+      "original": "高下相倾。",
+      "userNote": "同上。\n相依。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:20:56.752Z"
+    },
+    "daodejing-02-07": {
+      "original": "音声相和。",
+      "userNote": "",
+      "status": "uncertain",
+      "updatedAt": "2026-08-15T21:21:49.192Z"
+    },
+    "daodejing-02-08": {
+      "original": "前后相随。",
+      "userNote": "同上。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:22:09.171Z"
+    },
+    "daodejing-02-09": {
+      "original": "是以圣人处无为之事，行不言之教。",
+      "userNote": "这里无为和不言应该是不通过行为或言语来给人们设立标签，分等级。\n圣人不光自己实践无为，还教导别人无为。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:28:01.044Z"
     }
   }
 }
