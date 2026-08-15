@@ -9,8 +9,8 @@ Maintain this Node.js, Express, native HTML/CSS/JavaScript application as a loca
 
 ## Required workflow
 
-1. Read `AGENTS.md`, this Skill, `docs/EDITORIAL_POLICY.md`, and the relevant data, API/UI, and tests before editing.
-2. Keep source content and personal state isolated. Content changes must not write to `data/notes/`; persistence changes must preserve every note record exactly unless the user explicitly changes it.
+1. Read `AGENTS.md`, this Skill, `98-docs/EDITORIAL_POLICY.md`, and the relevant data, API/UI, and tests before editing.
+2. Keep source content and personal state isolated. Content changes must not write to `01-notes/`; persistence changes must preserve every note record exactly unless the user explicitly changes it.
 3. Keep content, backend validation, frontend rendering, README, documentation, and tests consistent.
 4. Run `npm test` after every change. For UI or API work, start the local server and exercise the affected endpoint or page.
 5. For any persistence or sentence-identity work, compare each affected note record's `sentence.id`, `original`, `userNote`, `status`, and `updatedAt` before and after.
@@ -20,14 +20,14 @@ Maintain this Node.js, Express, native HTML/CSS/JavaScript application as a loca
 When the user asks for a new chapter of an existing work, treat it as an implementation request, not merely a prose answer.
 
 1. Confirm the requested text basis. If the user provides only a title or the edition could materially change the text, request the source text or edition before adding it.
-2. Add ordered sentence cards to the relevant `data/works/<work-id>.json` file, retaining the work's `textBasis` and adding sentence-level variants or uncertainties where needed.
+2. Add ordered sentence cards to the relevant `00-library/works/<work-id>.json` file, retaining the work's `textBasis` and adding sentence-level variants or uncertainties where needed.
 3. Supply concise `literalTranslation`, clearly labeled `llmInterpretation`, a paragraph array in `expandedInterpretation`, and `ambiguities` for every sentence.
 4. Do not edit the work's notes file. New sentence state is implicit `unread` until the user first saves that sentence.
 5. Validate JSON, run tests, start the local server if needed, and return `http://localhost:3000/chapter.html?work=<work-id>&chapter=<chapter-id>`.
 
 ## Non-negotiable note-to-source integrity
 
-Store personal state exclusively in `data/notes/<work-id>.json`, keyed by stable `sentence.id`. Each note record contains the exact `original` snapshot plus `userNote`, `status`, and `updatedAt`. Keep those fields out of `data/works/*.json`.
+Store personal state exclusively in `01-notes/<work-id>.json`, keyed by stable `sentence.id`. Each note record contains the exact `original` snapshot plus `userNote`, `status`, and `updatedAt`. Keep those fields out of `00-library/works/*.json`.
 
 - Never write to a notes file while adding chapters, revising translations or interpretations, changing layout, or performing other content-only work.
 - Never delete, reuse, or change the `sentence.id` or `original` of a sentence that has a note record.
@@ -40,7 +40,7 @@ Store personal state exclusively in `data/notes/<work-id>.json`, keyed by stable
 
 ## Text basis and source rules
 
-Treat `docs/EDITORIAL_POLICY.md` as the single source of truth for textual evidence and editorial layers.
+Treat `98-docs/EDITORIAL_POLICY.md` as the single source of truth for textual evidence and editorial layers.
 
 - Every work must have a `textBasis` object with `status`, `baseText`, `witnesses`, `editorialLayers`, and `limitations`.
 - Record consequential variants, segmentation differences, omissions, additions, and uncertain references in `ambiguities` or `variants`; never silently harmonize them.
@@ -78,7 +78,7 @@ Write `expandedInterpretation` as two to four short, self-contained paragraphs. 
 - Use `<work-id>-NN` for chapters and `<work-id>-NN-NN` for sentences.
 - Keep UTF-8 JSON, two-space indentation, and a trailing newline.
 - Do not change the JSON schema without updating backend, frontend, README, documentation, and tests together.
-- Add works to `library.json`, then create a separate file in `data/works/`; never make a user-supplied path a file path.
+- Add works to `00-library/library.json`, then create a separate file in `00-library/works/`; never make a user-supplied path a file path.
 - Merge user fields from notes only at read time and write only the target work's notes file on save.
 - Notes writes are serialized per work so simultaneous saves from separate tabs cannot lose one another's changes. Preserve that guarantee in future persistence changes.
 - Derive chapter reading state from merged sentence notes; do not persist reader progress in content JSON.

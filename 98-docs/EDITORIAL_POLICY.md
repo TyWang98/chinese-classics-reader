@@ -1,5 +1,7 @@
 # Editorial policy
 
+本文件是原文选择、文本证据和编辑边界的唯一说明。句子身份及笔记绑定见 [Data and notes model](DATA_MODEL.md)。
+
 ## Purpose
 
 This project distinguishes the text being displayed from the editorial choices used to display it. It does not claim to reconstruct an author's autograph or identify a single uniquely correct text.
@@ -36,6 +38,4 @@ This is an evidence policy, not a rule that a source is trustworthy or untrustwo
 - If a difference affects meaning, order, omission, addition, or segmentation, expose it as an uncertainty or variant.
 - If the evidence is incomplete, use `unverified` and say what is missing rather than implying certainty.
 
-## Changes after notes exist
-
-Changing a translation or an explanation must not touch notes. Changing an `original` sentence that has saved notes is a sentence-identity migration: stop, obtain explicit authorization, preserve the existing record, document the old and new text basis, and verify every note binding before and after.
+Changing an `original` sentence that already has notes is a data migration, not ordinary editing. Follow the [mandatory migration workflow](../99-system/skills/classical-text-reader/SKILL.md) rather than duplicating it here.

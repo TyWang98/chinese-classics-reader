@@ -9,8 +9,8 @@ class StoreError extends Error {
   }
 }
 
-function createJsonStore(dataRoot) {
-  const libraryPath = path.join(dataRoot, 'library.json');
+function createJsonStore({ libraryRoot, notesRoot }) {
+  const libraryPath = path.join(libraryRoot, 'library.json');
   const writeChains = new Map();
 
   async function readJson(filePath) {
@@ -37,13 +37,13 @@ function createJsonStore(dataRoot) {
 
   async function getContentWork(workId) {
     await findWorkEntry(workId);
-    const work = await readJson(path.join(dataRoot, 'works', `${workId}.json`));
+    const work = await readJson(path.join(libraryRoot, 'works', `${workId}.json`));
     if (work.id !== workId) throw new StoreError('Work data does not match requested work', 500);
     return work;
   }
 
   async function getNotes(workId) {
-    const notesPath = path.join(dataRoot, 'notes', `${workId}.json`);
+    const notesPath = path.join(notesRoot, `${workId}.json`);
     try {
       const notes = await readJson(notesPath);
       if (notes.workId !== workId || !notes.sentences || typeof notes.sentences !== 'object' || Array.isArray(notes.sentences)) {
@@ -157,7 +157,7 @@ function createJsonStore(dataRoot) {
         updatedAt: savedAt
       };
       notes.updatedAt = savedAt;
-      await writeJsonSafely(path.join(dataRoot, 'notes', `${workId}.json`), notes);
+      await writeJsonSafely(path.join(notesRoot, `${workId}.json`), notes);
       return { sentenceId, savedAt };
     });
   }

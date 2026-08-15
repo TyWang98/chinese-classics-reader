@@ -2,11 +2,16 @@ const path = require('node:path');
 const express = require('express');
 const { createApiRouter } = require('./src/routes/api');
 
-function createApp({ dataRoot = path.join(__dirname, 'data') } = {}) {
+const projectRoot = path.join(__dirname, '..');
+
+function createApp({
+  libraryRoot = path.join(projectRoot, '00-library'),
+  notesRoot = path.join(projectRoot, '01-notes')
+} = {}) {
   const app = express();
 
   app.use(express.json({ limit: '200kb' }));
-  app.use('/api', createApiRouter({ dataRoot }));
+  app.use('/api', createApiRouter({ libraryRoot, notesRoot }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.use((error, _request, response, _next) => {

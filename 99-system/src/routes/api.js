@@ -20,9 +20,9 @@ function chapterSummary(chapter) {
   };
 }
 
-function createApiRouter({ dataRoot }) {
+function createApiRouter({ libraryRoot, notesRoot }) {
   const router = express.Router();
-  const store = createJsonStore(dataRoot);
+  const store = createJsonStore({ libraryRoot, notesRoot });
 
   router.get('/works', async (_request, response, next) => {
     try {

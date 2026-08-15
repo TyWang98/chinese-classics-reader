@@ -5,18 +5,24 @@ const os = require('node:os');
 const path = require('node:path');
 const { createJsonStore, StoreError } = require('../src/services/jsonStore');
 
-const projectData = path.join(__dirname, '..', 'data');
+const projectLibrary = path.join(__dirname, '..', '..', '00-library');
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'classical-reader-'));
-  await fs.mkdir(path.join(root, 'works'), { recursive: true });
-  await fs.copyFile(path.join(projectData, 'library.json'), path.join(root, 'library.json'));
+  const libraryRoot = path.join(root, '00-library');
+  const notesRoot = path.join(root, '01-notes');
+  await fs.mkdir(path.join(libraryRoot, 'works'), { recursive: true });
+  await fs.mkdir(notesRoot, { recursive: true });
   await fs.copyFile(
-    path.join(projectData, 'works', 'daodejing.json'),
-    path.join(root, 'works', 'daodejing.json')
+    path.join(projectLibrary, 'library.json'),
+    path.join(libraryRoot, 'library.json')
+  );
+  await fs.copyFile(
+    path.join(projectLibrary, 'works', 'daodejing.json'),
+    path.join(libraryRoot, 'works', 'daodejing.json')
   );
   t.after(() => fs.rm(root, { recursive: true, force: true }));
-  return root;
+  return { root, libraryRoot, notesRoot };
 }
 
 test('reads public content, starts with no personal state, and derives chapter status', async (t) => {
@@ -48,11 +54,11 @@ test('reads public content, starts with no personal state, and derives chapter s
 });
 
 test('saving changes only the target notes record and never public content', async (t) => {
-  const root = await fixture(t);
-  const store = createJsonStore(root);
-  const workPath = path.join(root, 'works', 'daodejing.json');
-  const libraryPath = path.join(root, 'library.json');
-  const notesPath = path.join(root, 'notes', 'daodejing.json');
+  const roots = await fixture(t);
+  const store = createJsonStore(roots);
+  const workPath = path.join(roots.libraryRoot, 'works', 'daodejing.json');
+  const libraryPath = path.join(roots.libraryRoot, 'library.json');
+  const notesPath = path.join(roots.notesRoot, 'daodejing.json');
   const contentBefore = await fs.readFile(workPath, 'utf8');
   const libraryBefore = await fs.readFile(libraryPath, 'utf8');
 
@@ -106,9 +112,9 @@ test('serializes simultaneous saves for one work without losing either sentence'
 });
 
 test('rejects a note whose original no longer matches its sentence', async (t) => {
-  const root = await fixture(t);
-  const store = createJsonStore(root);
-  const notesPath = path.join(root, 'notes', 'daodejing.json');
+  const roots = await fixture(t);
+  const store = createJsonStore(roots);
+  const notesPath = path.join(roots.notesRoot, 'daodejing.json');
   await store.updateSentence(
     'daodejing',
     'daodejing-01',

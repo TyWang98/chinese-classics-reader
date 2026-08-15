@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "Local, sentence-by-sentence classical Chinese reader and notebook.",
-  "main": "server.js",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "start": "node 99-system/server.js",
+    "dev": "node --watch 99-system/server.js",
     "test": "node --test"
   },
   "dependencies": {

@@ -5,22 +5,32 @@ const os = require('node:os');
 const path = require('node:path');
 const { createApp } = require('../server');
 
-const projectData = path.join(__dirname, '..', 'data');
+const projectLibrary = path.join(__dirname, '..', '..', '00-library');
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'classical-reader-api-'));
-  await fs.mkdir(path.join(root, 'works'), { recursive: true });
-  await fs.copyFile(path.join(projectData, 'library.json'), path.join(root, 'library.json'));
+  const libraryRoot = path.join(root, '00-library');
+  const notesRoot = path.join(root, '01-notes');
+  await fs.mkdir(path.join(libraryRoot, 'works'), { recursive: true });
+  await fs.mkdir(notesRoot, { recursive: true });
   await fs.copyFile(
-    path.join(projectData, 'works', 'daodejing.json'),
-    path.join(root, 'works', 'daodejing.json')
+    path.join(projectLibrary, 'library.json'),
+    path.join(libraryRoot, 'library.json')
+  );
+  await fs.copyFile(
+    path.join(projectLibrary, 'works', 'daodejing.json'),
+    path.join(libraryRoot, 'works', 'daodejing.json')
   );
   t.after(() => fs.rm(root, { recursive: true, force: true }));
 
-  const server = createApp({ dataRoot: root }).listen(0);
+  const server = createApp({ libraryRoot, notesRoot }).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(() => new Promise((resolve) => server.close(resolve)));
-  return { root, base: `http://127.0.0.1:${server.address().port}` };
+  return {
+    libraryRoot,
+    notesRoot,
+    base: `http://127.0.0.1:${server.address().port}`
+  };
 }
 
 test('API returns the library, text basis, chapters, and sentence content', async (t) => {
@@ -89,8 +99,8 @@ test('API rejects removed status, source fields, and missing resources', async (
 });
 
 test('saving unread persists completed in notes without changing work content', async (t) => {
-  const { root, base } = await fixture(t);
-  const workPath = path.join(root, 'works', 'daodejing.json');
+  const { libraryRoot, notesRoot, base } = await fixture(t);
+  const workPath = path.join(libraryRoot, 'works', 'daodejing.json');
   const workBefore = await fs.readFile(workPath, 'utf8');
   const saved = await fetch(
     `${base}/api/works/daodejing/chapters/daodejing-03/sentences/daodejing-03-01`,
@@ -103,7 +113,7 @@ test('saving unread persists completed in notes without changing work content', 
 
   assert.equal(saved.status, 200);
   assert.equal(await fs.readFile(workPath, 'utf8'), workBefore);
-  const notes = JSON.parse(await fs.readFile(path.join(root, 'notes', 'daodejing.json'), 'utf8'));
+  const notes = JSON.parse(await fs.readFile(path.join(notesRoot, 'daodejing.json'), 'utf8'));
   assert.equal(notes.sentences['daodejing-03-01'].status, 'completed');
   assert.equal(notes.sentences['daodejing-03-01'].userNote, '自动完成测试');
 

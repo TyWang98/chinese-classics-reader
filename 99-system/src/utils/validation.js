@@ -20,4 +20,4 @@ function validateSentenceUpdate(body) {
   return { valid: true };
 }
 
-module.exports = { ALLOWED_STATUSES, isSafeId, validateSentenceUpdate };
+module.exports = { isSafeId, validateSentenceUpdate };
