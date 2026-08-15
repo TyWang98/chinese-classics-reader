@@ -1,6 +1,6 @@
 {
   "workId": "daodejing",
-  "updatedAt": "2026-08-15T21:28:01.044Z",
+  "updatedAt": "2026-08-15T21:49:32.984Z",
   "sentences": {
     "daodejing-01-01": {
       "original": "道可道，非常道。",
@@ -175,6 +175,12 @@
       "userNote": "这里无为和不言应该是不通过行为或言语来给人们设立标签，分等级。\n圣人不光自己实践无为，还教导别人无为。",
       "status": "completed",
       "updatedAt": "2026-08-15T21:28:01.044Z"
+    },
+    "daodejing-02-10": {
+      "original": "万物作焉而不辞。",
+      "userNote": "联系：有名，万物之母。\n这是无为的哲学，虽不推崇标签化万物，但也不会阻拦。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:49:32.984Z"
     }
   }
 }
