@@ -2,10 +2,29 @@
   --ink: #242526;
   --muted: #68706f;
   --paper: #fcfbf7;
+  --surface: #fffefa;
+  --surface-hover: #fff;
+  --soft: #f4f4ef;
+  --soft-green: #f4f6f2;
   --line: #dedbd2;
+  --soft-line: #b6c2bc;
+  --control-bg: #fff;
+  --control-line: #bbb8b0;
+  --detail-bg: #fafcf9;
+  --detail-line: #d6ddd8;
+  --detail-divider: #e2e6e2;
+  --detail-ink: #3f4845;
   --accent: #4e615c;
+  --accent-hover: #3c514a;
+  --button-ink: #fff;
+  --focus: #aabbb3;
   --warn: #f7f1e5;
+  --warn-ink: #5d5140;
+  --success: #31705a;
   --error: #8c3535;
+  --error-bg: #fff4f4;
+  --error-line: #d9adad;
+  --shadow: 0 8px 24px rgb(36 37 38 / 12%);
 }
 
 * {
@@ -28,7 +47,7 @@ body {
   gap: 20px;
   padding: 0 5vw;
   border-bottom: 1px solid var(--line);
-  background: #fffefa;
+  background: var(--surface);
   color: var(--muted);
   font-size: .86rem;
 }
@@ -106,14 +125,14 @@ h3 {
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fffefa;
+  background: var(--surface);
   color: inherit;
   text-decoration: none;
 }
 
 .index-card:hover {
   border-color: var(--accent);
-  background: #fff;
+  background: var(--surface-hover);
 }
 
 .index-card h2 {
@@ -151,7 +170,7 @@ h3 {
   margin: 28px 0 18px;
   padding: 22px 25px;
   border-left: 3px solid var(--accent);
-  background: #f4f4ef;
+  background: var(--soft);
 }
 
 .full-text h2 {
@@ -182,7 +201,7 @@ h3 {
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fffefa;
+  background: var(--surface);
 }
 
 .original {
@@ -204,8 +223,8 @@ h3 {
 
 .interpretation {
   padding: 14px 16px;
-  border-left: 3px solid #b6c2bc;
-  background: #f4f6f2;
+  border-left: 3px solid var(--soft-line);
+  background: var(--soft-green);
   margin: 18px 0;
 }
 
@@ -217,7 +236,7 @@ h3 {
   padding: 14px 16px;
   margin: 18px 0;
   background: var(--warn);
-  color: #5d5140;
+  color: var(--warn-ink);
 }
 
 .ambiguities ul {
@@ -241,16 +260,16 @@ h3 {
   min-height: 108px;
   resize: vertical;
   padding: 12px;
-  border: 1px solid #bbb8b0;
+  border: 1px solid var(--control-line);
   border-radius: 5px;
-  background: #fff;
+  background: var(--control-bg);
   color: var(--ink);
   font: inherit;
   line-height: 1.6;
 }
 
 .note-section textarea:focus,select:focus {
-  outline: 2px solid #aabbb3;
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
 
@@ -271,10 +290,10 @@ h3 {
 
 .save-row select {
   padding: 7px;
-  border: 1px solid #bbb8b0;
+  border: 1px solid var(--control-line);
   border-radius: 4px;
   font: inherit;
-  background: #fff;
+  background: var(--control-bg);
 }
 
 button {
@@ -282,13 +301,13 @@ button {
   border: 0;
   border-radius: 4px;
   background: var(--accent);
-  color: #fff;
+  color: var(--button-ink);
   font: inherit;
   cursor: pointer;
 }
 
 button:hover:not(:disabled) {
-  background: #3c514a;
+  background: var(--accent-hover);
 }
 
 button:disabled {
@@ -302,7 +321,7 @@ button:disabled {
 }
 
 .save-feedback.saved {
-  color: #31705a;
+  color: var(--success);
 }
 
 .save-feedback.failed {
@@ -312,8 +331,8 @@ button:disabled {
 .page-error {
   padding: 16px;
   color: var(--error);
-  border: 1px solid #d9adad;
-  background: #fff4f4;
+  border: 1px solid var(--error-line);
+  background: var(--error-bg);
   border-radius: 6px;
 }
 
@@ -347,9 +366,9 @@ button:disabled {
 
 .expanded-interpretation {
   margin: 18px 0;
-  border: 1px solid #d6ddd8;
+  border: 1px solid var(--detail-line);
   border-radius: 6px;
-  background: #fafcf9;
+  background: var(--detail-bg);
   overflow: hidden;
 }
 
@@ -372,7 +391,7 @@ button:disabled {
 }
 
 .expanded-interpretation summary:focus-visible {
-  outline: 2px solid #8ca198;
+  outline: 2px solid var(--focus);
   outline-offset: -2px;
 }
 
@@ -399,8 +418,8 @@ button:disabled {
 
 .expanded-content {
   padding: 2px 16px 16px;
-  border-top: 1px solid #e2e6e2;
-  color: #3f4845;
+  border-top: 1px solid var(--detail-divider);
+  color: var(--detail-ink);
 }
 
 .expanded-content p {
@@ -424,9 +443,9 @@ button:disabled {
 .text-basis {
   margin: 20px 0 28px;
   padding: 16px 18px;
-  border-left: 3px solid #9aa9a2;
-  background: #f4f6f2;
-  color: #3f4845;
+  border-left: 3px solid var(--soft-line);
+  background: var(--soft-green);
+  color: var(--detail-ink);
 }
 
 .text-basis h2 {
@@ -447,4 +466,94 @@ button:disabled {
 
 .text-basis[hidden] {
   display: none;
+}
+
+/* Shared theme control and chapter navigation */
+.theme-toggle {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--accent);
+  font-size: .82rem;
+}
+
+.theme-toggle:hover:not(:disabled) {
+  background: var(--soft);
+}
+
+.reading-page {
+  padding-bottom: 135px;
+}
+
+.chapter-switcher[hidden] {
+  display: none;
+}
+
+.chapter-switcher {
+  position: fixed;
+  z-index: 20;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--muted);
+  font-size: .84rem;
+}
+
+.chapter-switcher select {
+  min-height: 38px;
+  padding: 6px 9px;
+  border: 1px solid var(--control-line);
+  border-radius: 5px;
+  background: var(--control-bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+html[data-theme="dark"] {
+  --ink: #d8dedb;
+  --muted: #a6b0ab;
+  --paper: #181c1b;
+  --surface: #212725;
+  --surface-hover: #262e2b;
+  --soft: #242a27;
+  --soft-green: #232b27;
+  --line: #39423e;
+  --soft-line: #526159;
+  --control-bg: #171c1a;
+  --control-line: #4a5550;
+  --detail-bg: #202623;
+  --detail-line: #3d4943;
+  --detail-divider: #37413c;
+  --detail-ink: #c5cdc9;
+  --accent: #9eb9ad;
+  --accent-hover: #abc5ba;
+  --button-ink: #17201c;
+  --warn: #302b22;
+  --warn-ink: #d5c6aa;
+  --success: #83bea7;
+  --error: #e4a0a0;
+  --error-bg: #302121;
+  --error-line: #714b4b;
+  --shadow: 0 8px 24px rgb(0 0 0 / 28%);
+  color-scheme: dark;
+}
+
+@media (max-width: 680px) {
+  .chapter-switcher {
+    right: 10px;
+    bottom: max(10px,env(safe-area-inset-bottom));
+    left: 10px;
+  }
+  .chapter-switcher select {
+    min-width: 0;
+    flex: 1;
+  }
 }

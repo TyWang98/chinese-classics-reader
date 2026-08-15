@@ -1,6 +1,6 @@
 {
   "workId": "daodejing",
-  "updatedAt": "2026-08-15T21:49:32.984Z",
+  "updatedAt": "2026-08-15T22:06:07.133Z",
   "sentences": {
     "daodejing-01-01": {
       "original": "道可道，非常道。",
@@ -181,6 +181,30 @@
       "userNote": "联系：有名，万物之母。\n这是无为的哲学，虽不推崇标签化万物，但也不会阻拦。",
       "status": "completed",
       "updatedAt": "2026-08-15T21:49:32.984Z"
+    },
+    "daodejing-02-11": {
+      "original": "生而不有。",
+      "userNote": "圣人不会占有/专有自己的成果。\n开源。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T21:54:37.467Z"
+    },
+    "daodejing-02-12": {
+      "original": "为而不恃。",
+      "userNote": "产生行动之后（为），不会把这个动作产生的后果加以影响在自身或别人身上。\n可以泛化理解成，做事不要有目的。",
+      "status": "uncertain",
+      "updatedAt": "2026-08-15T22:00:47.185Z"
+    },
+    "daodejing-02-13": {
+      "original": "功成而弗居。",
+      "userNote": "对上一句的具体解释。不居功自傲。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T22:01:17.213Z"
+    },
+    "daodejing-02-14": {
+      "original": "夫唯弗居，是以不去。",
+      "userNote": "反着理解，意思就是如果居功，这个功就会离你而去。",
+      "status": "completed",
+      "updatedAt": "2026-08-15T22:06:07.133Z"
     }
   }
 }

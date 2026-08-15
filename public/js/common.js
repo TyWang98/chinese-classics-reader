@@ -38,3 +38,32 @@ window.Reader = {
     container.innerHTML = `<p class="page-error">${this.escapeHtml(message)}</p>`;
   }
 };
+
+function initializeThemeToggle() {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'theme-toggle';
+
+  function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    button.ariaPressed = String(theme === 'dark');
+    button.textContent = theme === 'dark' ? '明亮模式' : '护眼暗色';
+  }
+
+  let theme = 'light';
+  try {
+    theme = localStorage.getItem('reader-theme') || theme;
+  } catch {}
+  setTheme(theme);
+
+  button.addEventListener('click', () => {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(theme);
+    try {
+      localStorage.setItem('reader-theme', theme);
+    } catch {}
+  });
+  document.querySelector('.site-header')?.append(button);
+}
+
+initializeThemeToggle();

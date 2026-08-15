@@ -90,6 +90,23 @@ function enableSingleExpandedSection(container) {
   });
 }
 
+function chapterUrl(workId, chapterId) {
+  return `/chapter.html?work=${encodeURIComponent(workId)}&chapter=${encodeURIComponent(chapterId)}`;
+}
+
+function renderChapterSwitcher(work, chapterId) {
+  const switcher = document.querySelector('#chapter-switcher');
+  const select = document.querySelector('#chapter-select');
+  select.innerHTML = work.chapters.map((chapter) =>
+    `<option value="${Reader.escapeHtml(chapter.id)}">第 ${chapter.number} 章 · ${Reader.escapeHtml(chapter.title)}</option>`
+  ).join('');
+  select.value = chapterId;
+  select.addEventListener('change', () => {
+    location.href = chapterUrl(work.id, select.value);
+  });
+  switcher.hidden = false;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const query = new URLSearchParams(location.search);
   const workId = query.get('work');
@@ -102,9 +119,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    const { work, chapter } = await Reader.getJson(
-      `/api/works/${encodeURIComponent(workId)}/chapters/${encodeURIComponent(chapterId)}`
-    );
+    const [{ work, chapter }, workIndex] = await Promise.all([
+      Reader.getJson(`/api/works/${encodeURIComponent(workId)}/chapters/${encodeURIComponent(chapterId)}`),
+      Reader.getJson(`/api/works/${encodeURIComponent(workId)}`)
+    ]);
     document.title = `${work.title} 第${chapter.number}章｜古文逐句阅读与笔记`;
     document.querySelector('#breadcrumbs').innerHTML = `
       <a href="/">作品索引</a>
@@ -131,6 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       textarea.addEventListener('input', () => autosize(textarea));
     });
     enableSingleExpandedSection(container);
+    renderChapterSwitcher(workIndex, chapter.id);
   } catch (error) {
     console.error(error);
     Reader.showError(container, error.message);
